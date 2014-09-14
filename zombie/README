@@ -1,0 +1,12 @@
+README
+======
+
+Zombie+ Ultra is a multiplayer zombie survival game written in Python using Cocos2D and Box2D for Windows, Linux and OSX. It is currently in pre-alpha development.
+
+Development Tools
+-----------------
+
+* Cocos2d (pypi)
+* pyglet (pypi)
+* Box2D==2.3b0 (pypi)
+  * Swig (http://sourceforge.net/projects/swig/files/swigwin/swigwin-3.0.2/swigwin-3.0.2.zip/download?use_mirror=heanet)
