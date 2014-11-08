@@ -1,0 +1,175 @@
+Development
+===========
+pre-alpha 2
+-----------
+client movement
+initial small map
+
+pre-alpha 1
+-----------
+ * client
+   * menus
+   * connect to server
+   * render position on map
+ * server
+   * setup world map
+   * allow clients to connect
+   * update clients
+
+TODO: 
+ * throw
+
+Null bytes are used to separate variable-length values.
+
+Positions consist of x (float), y (float) and rotation (float) (3 x 4 == 12 bytes).
+
+Colors consist of R, G, B (3 unsigned bytes).
+
+Compressed messages consist of the first byte
+
+Sever Options
+=============
+
+Client Data
+===========
+
+The first byte is the client id. If a client has not yet established a connection the client id will be 0 and the only accepted action will be 'connect', otherwise it can be any value between 1-255.
+
+The second byte is the client action which may be:
+ * connect - Establish a connection between the client and server.
+   * icon (unsigned byte) - Player icon ID # TODO valid values.
+   * color - Player color.
+     * red (unsigned byte)
+     * green (unsigned byte)
+     * blue (unsigned byte)
+   * IP or hostname length (unsigned byte)
+   * IP or hostname (variable-length) # TODO
+   #* nickname length (unsigned byte)
+   * nickname (variable-length) - up to 10 characters long. # TODO
+
+ * start_move_forwards - Server instantly sets forward friction-less motion.
+ * start_move_backwards - Server instantly sets backwards friction-less motion.
+ * start_strafe_left - Server instantly sets left friction-less motion.
+ * start_strafe_right - Server instantly sets right friction-less motion.
+
+ * start_attack - Server instantly starts the attack.
+ * start_use - Server instantly starts use.
+
+ * end_move_forwards - Server instantly deletes forward motion.
+ * end_move_backwards - Server instantly deletes backwards motion.
+ * end_strafe_left - Server instantly deletes left motion.
+ * end_strafe_right - Server instantly deletes right motion.
+
+ * end_attack - Server instantly stops the attack.
+ * end_use - Server instantly stops use.
+
+ * turn_around - Server instantly rotates the player 180 degrees.
+
+ * cursor_motion - Location of client cursor within the game window scaled to between 0 and 255 resulting in a small accuracy loss. Server updates rotation and cursor location.
+   * x (unsigned byte)
+   * y (unsigned byte)
+
+ * equip_slot_1 - Server instantly equips slot.
+ * equip_slot_2 - Server instantly equips slot.
+ * equip_slot_3 - Server instantly equips slot.
+ * equip_slot_4 - Server instantly equips slot.
+ * equip_slot_5 - Server instantly equips slot.
+ * equip_slot_6 - Server instantly equips slot.
+ * equip_slot_7 - Server instantly equips slot.
+ * equip_slot_8 - Server instantly equips slot.
+ * equip_slot_9 - Server instantly equips slot.
+
+ * inventory_switch - Server instantly switches inventory slots.
+   * source_slot (unsigned byte)
+   * target_slot (unsigned byte)
+
+ * drop_item - Server instantly drops item.
+   * slot (unsigned byte)
+
+
+SERVER CODES
+============
+
+ * connected - Successful response to client connect message. 
+   * client_id (unsigned byte) - 1-255
+   * tile map length (unsigned int)
+   * tile map (tile map file contents)
+   * update contents (see update)
+
+ * connected_compressed - Compressed version of connected.
+
+ * message - Client instantly displays message.
+   * client_id (unsigned byte)
+   * message (variable-length)
+
+ * shutdown - Client instantly displays shutdown message.
+
+ * kick - Client instantly displays kicked message. # TODO: Message
+
+ * stats - Client instantly applies stat changes.
+
+ * attack - Client instantly renders attack.
+   * object id (unsigned short)
+
+ * character_equip - Client instantly renders equip.
+   * object id (unsigned short)
+   * object type (unsigned byte)
+
+ * player_connected - Another client connected to the server. Client updates client info and shows message.
+   * client_id (unsigned byte) - 1-255
+   * player icon (unsigned byte)
+   * player color
+   * nickname length (unsigned bytes)
+   * nickname (bytes)
+
+ * player_disconnected - Another client disconnected from the server. Client updates client info and shows message.
+   * client_id (unsigned byte) - 1-255
+
+ * player_kicked - Another client has been kicked from the server. Client updates client info and shows message.
+   * client_id
+
+ * update - Compressed. Client object locations are updated.
+   * client position (position)
+   * new objects length (unsigned short)
+   * new objects (object list) - Client adds new local objects.
+     * object id (unsigned short)
+     * object type (unsigned byte)
+     * object position
+   * delete objects length (unsigned short)
+   * delete objects (object id list) - Client deletes local objects.
+     * object id (unsigned short)
+   #* update objects length (unsigned short)
+   * update objects (object list) - Client updates object positions
+     * object id (unsigned short)
+     * object position
+
+ * update_compressed - Compressed version of update.
+
+Map
+===
+
+The game map consists of a tile map and a wall map. The separate wall map defines boundaries between tiles to avoid an entire tile being required for a boundary.
+
+TODO: Map editor for adding walls.
+
+
+Tiles
+-----
+ * floor_grass
+ * floor_mud
+ * floor_carpet
+ * floor_pavement
+ * floor_road
+ * floor_wood
+ * floor_tiles
+
+ * floor_carpet_stairs
+ * floor_wood_stairs
+ * floor_tiles_stairs
+
+ * object_table
+ * object_sink
+ * object_toilet
+ * object_bed
+ * object_bush
+

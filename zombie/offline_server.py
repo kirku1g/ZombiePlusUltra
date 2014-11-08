@@ -42,31 +42,7 @@ class Server(object):
     def time(self):
         return time.time() - self.start_time
     
-    def nearby_objects(self, client, x, y):
-        client_range = self.client_range
-        client_objects = client['objects']
-        max_x = x + client_range
-        min_x = x - client_range
-        max_y = y + client_range
-        min_y = y - client_range
-        
-        object_delete_ids = []
-        objects_update = {}
-        
-        for object_id, obj in self.objects.iteritems():
-            if not (min_x < obj['x'] < max_x and min_y < obj['y'] < max_y):
-                if object_id in client_objects:
-                    client_objects.remove(object_id)
-                    object_delete_ids.append(object_id)
-                continue
-            
-            if object_id in client_objects:
-                if obj['modified_time'] >= client['update_time']:
-                    objects_update[object_id] = obj
-            else:
-                objects_update[object_id] = obj
-        
-        return objects_update, object_delete_ids
+
     
     def response(self, data, client_id):
         client = self.clients[client_id_counter]
